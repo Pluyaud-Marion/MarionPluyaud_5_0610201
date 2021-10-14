@@ -1,25 +1,32 @@
 let id = "";
-let descriptionElement = "";
-let priceElement = "";
-let imageElement = "";
-let nameElement = "";
-let altImageElement = "";
-let tagImg = "";
-let tagOptionColor = "";
-let colorsElement = "";
-
-
 
 
 async function main(){
     recoverId();
-    let datasProduct = await fetchDataProduct();
+    const datasProduct = await fetchDataProduct();
+    if (datasProduct===undefined){
+        return
+    }
 
-    recoverElements(datasProduct);
-    createTag();
-    displayElements();
-    colorSofa(datasProduct);
+    const elements = {
+        descriptionElement : {},
+        priceElement : {},
+        imageElement : {},
+        nameElement : {},
+        altImageElement : {},
+        colorsElement : {}
+    }
 
+    const tags = {
+        tagImg : {},
+        tagOptionColor : {}
+    }
+
+    recoverElements(datasProduct, elements);
+    createTag(tags);
+    displayElements(elements, tags);
+    colorSofa(datasProduct, elements, tags);
+    console.log(datasProduct)
 }
 
 main()
@@ -41,37 +48,37 @@ function fetchDataProduct(){
 };
 
 //récupère les informations sur un produit
-function recoverElements(datasProduct){
-    descriptionElement = datasProduct.description;
-    priceElement = datasProduct.price;
-    imageElement = datasProduct.imageUrl;
-    altImageElement = datasProduct.altTxt;
-    nameElement = datasProduct.name;
+function recoverElements(datasProduct, elements){
+    elements.descriptionElement = datasProduct.description;
+    elements.priceElement = datasProduct.price;
+    elements.imageElement = datasProduct.imageUrl;
+    elements.altImageElement = datasProduct.altTxt;
+    elements.nameElement = datasProduct.name;
 }
 //créé les balises manquantes
-function createTag(){
-    tagImg = document.createElement('img');
-    document.querySelector(".item__img").appendChild(tagImg);
+function createTag(tags){
+    tags.tagImg = document.createElement('img');
+    document.querySelector(".item__img").appendChild(tags.tagImg);
 }
 
 //affiche sur la page les éléments récupérés via l'API
-function displayElements(){
-    tagImg.src = imageElement;
-    tagImg.alt = altImageElement;
-    document.querySelector("#title").innerHTML = nameElement; // rajouter le nom dans balise title
-    document.querySelector("#price").innerHTML = priceElement;
-    document.querySelector("#description").innerHTML = descriptionElement;
+function displayElements(elements, tags){
+    tags.tagImg.src = elements.imageElement;
+    tags.tagImg.alt = elements.altImageElement;
+    document.querySelector("#title").innerHTML = elements.nameElement; // rajouter le nom dans balise title
+    document.querySelector("#price").innerHTML = elements.priceElement;
+    document.querySelector("#description").innerHTML = elements.descriptionElement;
 }
 
 //spécifique pour la sélection des couleurs
-function colorSofa(datasProduct){
-    colorsElement = datasProduct.colors;
-    for (color of colorsElement){
-        tagOptionColor = document.createElement('option');
-        document.querySelector("#colors").appendChild(tagOptionColor);
-        tagOptionColor.value = color;
-        tagOptionColor.innerHTML = color;
+function colorSofa(datasProduct, elements, tags){
+    elements.colorsElement = datasProduct.colors;
+    for (color of elements.colorsElement){
+        tags.tagOptionColor = document.createElement('option');
+        document.querySelector("#colors").appendChild(tags.tagOptionColor);
+        tags.tagOptionColor.value = color;
+        tags.tagOptionColor.innerHTML = color;
     }
-  
 }
+
 

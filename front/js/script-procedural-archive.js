@@ -35,7 +35,6 @@ fetch(urlKanap)
         baliseArticle.appendChild(baliseP);
         baliseP.innerHTML = sofa.description
 
-      
     }
 })
 .catch(e => console.log("il y a une erreur de type : " + e));
