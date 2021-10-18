@@ -33,8 +33,8 @@ async function main(){
     displayElements(elements, tags);
     colorSofa(datasProduct, elements, tags);
     //console.log(datasProduct)
-    displayColorSelect(elementsCart);
-    displayNumberArticle(elementsCart);
+    colorSelect(elementsCart);
+    numberSelect(elementsCart);
     //addCart(elements, elementsCart, idProduct, datasProduct);
     addArray(elementsCart, idProduct);
     //addLocalStorage(elementsCart);
@@ -93,7 +93,7 @@ function colorSofa(datasProduct, elements, tags){
 }
 
 // au clic récupération couleur
-function displayColorSelect(elementsCart){
+function colorSelect(elementsCart){
     document.querySelector("#addToCart").addEventListener("click", event => {
         event.preventDefault();
         elementsCart.selectedColor = document.querySelector("#colors").value;
@@ -102,77 +102,48 @@ function displayColorSelect(elementsCart){
 }
 
 // au clic récupération value
-function displayNumberArticle(elementsCart){
+function numberSelect(elementsCart){
     document.querySelector("#addToCart").addEventListener("click", event => {
         event.preventDefault();
-        elementsCart.selectedNumber = document.querySelector("#quantity").value;
+        elementsCart.selectedNumber = parseInt(document.querySelector("#quantity").value);
         //console.log(elementsCart.selectedNumber)
     })
 }
 
-
-// function addArray(elementsCart, idProduct){
-//     document.querySelector("#addToCart").addEventListener("click", event => {
-//         event.preventDefault();
-//         let productChoice = {
-//             couleur : elementsCart.selectedColor,
-//             nombre : elementsCart.selectedNumber,
-//             identifiant : idProduct.id
-//         }
-
-//         //converti les données de la variable produitDansStorage au format JSON
-//         let produitDansStorage = JSON.parse(localStorage.getItem("produit"));
-    
-//         if (produitDansStorage) { //si y a des produits dans local
-//             produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
-//             localStorage.setItem("produit", JSON.stringify(produitDansStorage));
-//             console.log("il y avait déjà des produits dans storage, j'ajoute : ", produitDansStorage)
-//             console.log(produitDansStorage)
-
-//         }else { // si pas de produits dans localstorage
-//             produitDansStorage = [] // tableau vide car localstorage est vide
-//             produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
-//             localStorage.setItem("produit", JSON.stringify(produitDansStorage));
-//             console.log("le panier était vide", produitDansStorage)
-//             console.log(produitDansStorage);
-//         }
-//     })
-// }
-
 function addArray(elementsCart, idProduct){
+    let productChoice = []
+
     document.querySelector("#addToCart").addEventListener("click", event => {
         event.preventDefault();
-        let productChoice = {
-            couleur : elementsCart.selectedColor,
-            nombre : parseInt(elementsCart.selectedNumber),
-            identifiant : idProduct.id
+
+        if(productChoice.includes(elementsCart.selectedColor) && productChoice.includes(idProduct.id)){
+            let resultIncre = elementsCart.selectedNumber + productChoice[2];
+            productChoice.splice(2,1,resultIncre)
+            console.log('produit déjà présent, on ajoute que la quantité', productChoice);
+
+        }else{
+            productChoice.push(elementsCart.selectedColor, idProduct.id, elementsCart.selectedNumber)
+            console.log("panier vide, mets le produit dans le panier");
+            console.log(productChoice);
         }
 
+        
         //converti les données de la variable produitDansStorage au format JSON
         let produitDansStorage = JSON.parse(localStorage.getItem("produit"));
     
       
-        if (produitDansStorage) { // si panier plein
-        
-            
-            //vérifier si produit avec même identfiant + même couleur existe 
+        if(produitDansStorage) { // si panier plein
 
-                //si OUI : changer que nombre = ancien nombre + nouveau nombre
-
-                //si NON = on ajoute le produit (push nouveau productChoice dans produitDansStorage)
             produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
             localStorage.setItem("produit", JSON.stringify(produitDansStorage));
-            console.log("il y avait déjà des produits dans storage, j'ajoute : ", produitDansStorage)
-       
+            //console.log("il y avait déjà des produits dans storage, j'ajoute : ", produitDansStorage)
 
         }else { // si pas de produits dans localstorage
             produitDansStorage = [] // tableau vide car localstorage est vide
             produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
             localStorage.setItem("produit", JSON.stringify(produitDansStorage));
-            console.log("le panier était vide", produitDansStorage)
-            console.log(produitDansStorage);
+            //console.log("le panier était vide", produitDansStorage)
+            //console.log(produitDansStorage);
         }
-       
-  
     })
 }
