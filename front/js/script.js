@@ -71,8 +71,7 @@ function assignData(tags, sofa){
 // fonction pour faire le lien entre un produit sur page d'accueil et page produit
 function linkPages(tags){
     const newHref = tags.tagA.href += "?id=" + tags.idDom;
-    //const newHref = `${tags.tagA.href}?id=`
-    console.log(newHref)
+    //console.log(newHref)
 }
 
 

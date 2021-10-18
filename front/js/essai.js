@@ -110,111 +110,69 @@ function displayNumberArticle(elementsCart){
     })
 }
 
-////repo vincent///
+
 // function addArray(elementsCart, idProduct){
-//     document.querySelector("#addToCart").addEventListener("click", event => {
-//     event.preventDefault();
-
-//         let array = {
-//             couleur : elementsCart.selectedColor,
-//             nombre : parseInt(elementsCart.selectedNumber), // transformé en number
-//             identifiant : idProduct.id,
-//         }
-
-//         let stock = [];
-
-//         if (localStorage.getItem("article") !== null){
-//             stock = JSON.parse(localStorage.getItem("article"));
-//             console.log("if stock", stock)
-//             console.log("if array", array)
-//         }else{
-//             stock.push(array);
-//             localStorage.setItem("article", JSON.stringify(stock));
-//             console.log("else stock", stock)
-//             console.log("else array", array)
-//         };
-//     })
-// }
-
-
-///fonction qui prend plusieurs objets dans le tableau
-// function addArray(elementsCart, idProduct){
-
-//     document.querySelector("#addToCart").addEventListener("click", event => {
-//     event.preventDefault();
-//         let array = [
-//             couleur = elementsCart.selectedColor,
-//             nombre = parseInt(elementsCart.selectedNumber), // transformé en number
-//             identifiant = idProduct.id,
-//         ]
-//         //arrayNombre.push(elementsCart.selectedNumber);
-//         //let reducer = (accumulator, curr) => accumulator + curr;
-//         //console.log(arrayNombre.reduce(reducer));
-//         //console.log(arrayNombre)
-
-//         let stock = JSON.parse(localStorage.getItem("article"));
-
-//         if (stock){ // si rempli
-//             if (stock.includes(elementsCart.selectedColor) && stock.includes(idProduct.id)){ 
-//                 console.log("produit avec même couleur même identifiant existe");
-
-//                 localStorage.setItem("article", JSON.stringify(stock))
-//                 stock[1].push(array)
-                    
-//             }else{
-//                 stock.push(array);
-//                 localStorage.setItem("article", JSON.stringify(stock))
-//                 console.log("panier plein mais ce produit n'existe pas",stock)
-//             }
-            
-//         }else{
-//             stock = [],
-//             stock.push(array);
-//             localStorage.setItem("article", JSON.stringify(stock))
-//             console.log("le panier était vide",stock)
-//         }
-//     })
-// }
-
-
-////fonction originale fonctionnait pour comptage ///
-// function addArray(elementsCart, idProduct){
-   
 //     document.querySelector("#addToCart").addEventListener("click", event => {
 //         event.preventDefault();
+//         let productChoice = {
+//             couleur : elementsCart.selectedColor,
+//             nombre : elementsCart.selectedNumber,
+//             identifiant : idProduct.id
+//         }
 
-//         const arrayCart = [
-//             couleur = elementsCart.selectedColor,
-//             nombre = elementsCart.selectedNumber,
-//             identifiant = idProduct.id
-//         ]
-
-//         let stockLocal = []
-//         stockLocal = JSON.parse(localStorage.getItem("article")); //transforme tableau en JSON
-//         console.log(stockLocal)
-
-//         // if (arrayCart.includes(couleur) && arrayCart.includes(identifiant)) {
-//         //     console.log("Ce produit est déjà dans le panier")
-//         //     let numberParsed = parseInt(elementsCart.selectedNumber)
-//         //     let numberAddParsed = parseInt(arrayCart[1])
-//         //     let totalNumber = numberAddParsed + numberParsed
-//         //     arrayCart.splice(1,1,totalNumber)
-//         //     console.log(arrayCart)
-            
-//         //     cartLocalStorage = JSON.stringify(arrayCart)
-//         //     localStorage.setItem("produit", cartLocalStorage)
-            
-//         // } else{
-//         //     console.log("j'ajoute ce produit dans le panier")
-//         //     arrayCart.push(elementsCart.selectedColor, elementsCart.selectedNumber, idProduct.id)
-//         //     console.log("ajout produit", arrayCart)
+//         //converti les données de la variable produitDansStorage au format JSON
+//         let produitDansStorage = JSON.parse(localStorage.getItem("produit"));
     
-//         //     let cartLocalStorage = JSON.stringify(arrayCart)
-//         //     localStorage.setItem("produit", cartLocalStorage)
-//         // }     
+//         if (produitDansStorage) { //si y a des produits dans local
+//             produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
+//             localStorage.setItem("produit", JSON.stringify(produitDansStorage));
+//             console.log("il y avait déjà des produits dans storage, j'ajoute : ", produitDansStorage)
+//             console.log(produitDansStorage)
+
+//         }else { // si pas de produits dans localstorage
+//             produitDansStorage = [] // tableau vide car localstorage est vide
+//             produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
+//             localStorage.setItem("produit", JSON.stringify(produitDansStorage));
+//             console.log("le panier était vide", produitDansStorage)
+//             console.log(produitDansStorage);
+//         }
 //     })
 // }
+
+function addArray(elementsCart, idProduct){
+    document.querySelector("#addToCart").addEventListener("click", event => {
+        event.preventDefault();
+        let productChoice = {
+            couleur : elementsCart.selectedColor,
+            nombre : parseInt(elementsCart.selectedNumber),
+            identifiant : idProduct.id
+        }
+
+        //converti les données de la variable produitDansStorage au format JSON
+        let produitDansStorage = JSON.parse(localStorage.getItem("produit"));
     
+      
+        if (produitDansStorage) { // si panier plein
+        
+            
+            //vérifier si produit avec même identfiant + même couleur existe 
 
+                //si OUI : changer que nombre = ancien nombre + nouveau nombre
 
+                //si NON = on ajoute le produit (push nouveau productChoice dans produitDansStorage)
+            produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
+            localStorage.setItem("produit", JSON.stringify(produitDansStorage));
+            console.log("il y avait déjà des produits dans storage, j'ajoute : ", produitDansStorage)
+       
 
+        }else { // si pas de produits dans localstorage
+            produitDansStorage = [] // tableau vide car localstorage est vide
+            produitDansStorage.push(productChoice); // on met dans ce tableau le contenu de la variable productChoice
+            localStorage.setItem("produit", JSON.stringify(produitDansStorage));
+            console.log("le panier était vide", produitDansStorage)
+            console.log(produitDansStorage);
+        }
+       
+  
+    })
+}
