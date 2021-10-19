@@ -119,6 +119,7 @@ function addArray(elementsCart, idProduct){
         if(productChoice.includes(elementsCart.selectedColor) && productChoice.includes(idProduct.id)){
             let resultIncre = elementsCart.selectedNumber + productChoice[2];
             productChoice.splice(2,1,resultIncre)
+            console.log(resultIncre)
             console.log('produit déjà présent, on ajoute que la quantité', productChoice);
 
         }else{
