@@ -43,7 +43,7 @@ function recoverId(idProduct){
 function fetchDataProduct(idProduct){
     return fetch(`http://localhost:3000/api/products/${idProduct.id}`)
     .then(response => response.json())
-  //  .then(data => data)
+  //  .then(data => data)’
     .catch(e => console.log("il y a une erreur sur la page produit de type :" + e));
 };
 
