@@ -87,35 +87,45 @@ function addArray(idProduct){
             numberChoice : parseInt(document.querySelector("#quantity").value),
             idChoice : idProduct.id,
         }
-
+        
         let arrayCart = [];
 
-        //si LS n'est pas vide = on récupère son contenu + on l'insère dans le tableau arrayCart + on le renvoit vers LS avec le nouveau contenu
-        if (localStorage.getItem("products")) {
-            arrayCart = JSON.parse(localStorage.getItem("products"));
+        /////// si LS n'est pas vide = on récupère son contenu + on l'insère dans le tableau arrayCart + on le renvoit vers LS avec le nouveau contenu
+        if (localStorage.getItem("products")) { ////// si LS non vide
+            arrayCart = JSON.parse(localStorage.getItem("products")); ///// on récupère son contenu et on l'insère ds [arrayCart]
 
-            arrayCart.push(productChoice);
+            arrayCart.push(productChoice); ///// on push le produit sélectionné vers [arrayCart]
 
-            for (elt of arrayCart) {
+            for (element of arrayCart) { ///// pour chaque élément dans [arrayCart]
                 //console.log(elt.colorChoice);
                 //console.log(productChoice.colorChoice);
 
-                if (elt.colorChoice == productChoice.colorChoice && elt.idChoice == productChoice.idChoice) {
+                /////// si la couleur de l'élément déjà dans [arrayCart] == à la couleur de l'élément choisi ET si l'ID de l'élément déjà dans [arrayCart] == ID de l'élément choisi --> c'est le même article
+                if (element.colorChoice == productChoice.colorChoice && element.idChoice == productChoice.idChoice) {
                     console.log("même couleur");
-                    arrayCart.pop()
+                    arrayCart.pop() ///// on retire le dernier élément pushé dans [arrayCart] --> l'article qui est identique
                     console.log(arrayCart);
+
+                    /*
+                    /////////////////// INCREMENTER numberChoice
+                    comment récupérer le 2ème nombre ? 
+                    comment additionner 1 er 2ème, etc nombre?
+                    Voir array créé dans page cart
+                    */
+
+
                 }else{
-                    arrayCart.push(productChoice);
+                    arrayCart.push(productChoice); /////// on ajoute au tableau le produit choisi
                 }
             }
 
-            localStorage.setItem("products", JSON.stringify(arrayCart));
+            localStorage.setItem("products", JSON.stringify(arrayCart)); /////// on envoi arrayCart au format JSON ds Localstorage
             console.log("panier plein")
             
 
-        } else{ // si LS est vide on le créé avec le produit ajouté
-            arrayCart.push(productChoice);
-            localStorage.setItem("products", JSON.stringify(arrayCart));
+        } else{ ////// si LS est vide on le créé avec le produit ajouté
+            arrayCart.push(productChoice); /////// on push le produit sélectionné vers [arrayCart]
+            localStorage.setItem("products", JSON.stringify(arrayCart)); /////// on envoi arrayCart au format JSON ds Localstorage
             console.log("panier vide");
         }
 

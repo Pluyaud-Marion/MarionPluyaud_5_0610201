@@ -1,35 +1,97 @@
 let productLS = JSON.parse(localStorage.getItem("products"));
 
-let selectSection = document.getElementById("cart__items");
-for (sofa of productLS){
+let quantity = "";
+let totalPriceQuantity = "";
+let arrayQuantity = [];
+let arrayPrice = [];
 
-    fetch(`http://localhost:3000/api/products/${sofa.idChoice}`)
-    .then(response => response.json())
-    .then(data => {
-       
-       selectSection.innerHTML += 
-    `<article class="cart__item" data-id="${sofa.idChoice}">
-    <div class="cart__item__img">
-      <img src="${data.imageUrl}" alt="Photographie d'un canapé">
-    </div>
-    <div class="cart__item__content">
-      <div class="cart__item__content__titlePrice">
-        <h2>${data.name}</h2>
-        <p>${data.price}€</p>
-      </div>
-      <div class="cart__item__content__settings">
-        <div class="cart__item__content__settings__quantity">
-          <p>Qté : </p>
-          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${sofa.numberChoice}">
-        </div>
-        <div class="cart__item__content__settings__delete">
-          <p class="deleteItem">Supprimer</p>
-        </div>
-      </div>
-    </div>
-    </article>`
-    })
+
+function main(){
+    addElementsCart();
+    displayTotalQuantity();
 }
+
+function addElementsCart(){
+    for (sofa of productLS){ // pour chaque canapé mis dans le panier LS
+    
+        let selectTagSection = document.getElementById("cart__items");    
+        quantity = sofa.numberChoice; // quantité d'un canapé choisie par l'utilisateur
+
+        fetch(`http://localhost:3000/api/products/${sofa.idChoice}`)
+        .then(response => response.json())
+        .then(data => {
+        
+            selectTagSection.innerHTML += 
+            `<article class="cart__item" data-id="${sofa.idChoice}">
+            <div class="cart__item__img">
+            <img src="${data.imageUrl}" alt="Photographie d'un canapé">
+            </div>
+            <div class="cart__item__content">
+            <div class="cart__item__content__titlePrice">
+                <h2>${data.name}</h2>
+                <p>${data.price}€</p>
+            </div>
+            <div class="cart__item__content__settings">
+                <div class="cart__item__content__settings__quantity">
+                <p>Qté : </p>
+                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${quantity}">
+                </div>
+                <div class="cart__item__content__settings__delete">
+                <p class="deleteItem">Supprimer</p>
+                </div>
+            </div>
+            </div>
+            </article>`
+
+            
+            
+            totalPriceQuantity = data.price * quantity
+            arrayPrice.push(totalPriceQuantity)
+            const reducer = (previousValue, currentValue) => previousValue + currentValue;
+            const totalPrice = arrayPrice.reduce(reducer);
+            document.getElementById("totalPrice").innerHTML = totalPrice
+
+        })
+        
+        arrayQuantity.push(quantity)       
+    }
+
+
+}
+
+function displayTotalQuantity(){
+    const reducer = (previousValue, currentValue) => previousValue + currentValue;
+    const totalQuantity = arrayQuantity.reduce(reducer)
+    document.getElementById("totalQuantity").innerHTML = totalQuantity
+}
+
+
+
+
+
+
+
+//
+
+
+
+main()
+
+
+
+
+
+
+
+
+// function totalQuantity(){
+    
+// }
+
+// totalQuantity()
+
+
+
 
 // for (article of productLS) {    
 //     const tagArticle = document.createElement("article");
