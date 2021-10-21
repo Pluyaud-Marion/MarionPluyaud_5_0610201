@@ -86,7 +86,7 @@ function addArray(idProduct){
     document.querySelector("#addToCart").addEventListener("click", () => {
         let productChoice = {
             colorChoice : document.querySelector("#colors").value,
-            numberChoice : parseInt(document.querySelector("#quantity").value),
+            quantityChoice : parseInt(document.querySelector("#quantity").value),
             idChoice : idProduct.id,
         }
         
@@ -103,13 +103,13 @@ function addArray(idProduct){
             // si le tableau retourné ds elementExistingInArrayCart est rempli = c'est qu'il y a un doublon
             if (elementExistingInArrayCart.length){ 
                 // on ajoute la quantité choisie à la quantité déjà existante
-                let total = productChoice.numberChoice + elementExistingInArrayCart[0].numberChoice
+                let total = productChoice.quantityChoice + elementExistingInArrayCart[0].quantityChoice
                 console.log("il y a déjà ce produit dans le panier, On l'ajoute. Total de ce produit : ", total);
                 
                 //pour chaque produit dans arrayCart, si la couleur et l'id du produit nouveau est identique à la couleur et l'id d'un produit dékà existant -> la nouvelle quantité correspond à l'addition
                 for (product of arrayCart){
                     if (product.colorChoice === productChoice.colorChoice && product.idChoice === productChoice.idChoice){
-                        product.numberChoice = total;
+                        product.quantityChoice = total;
                         console.log(arrayCart);
                     }
                 }
