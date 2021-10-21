@@ -80,6 +80,8 @@ function colorSofa(datasProduct, elements, tags){
         tags.tagOptionColor.innerHTML = color;
     }
 }
+
+
 function addArray(idProduct){
     document.querySelector("#addToCart").addEventListener("click", () => {
         let productChoice = {
@@ -89,39 +91,37 @@ function addArray(idProduct){
         }
         
         let arrayCart = [];
-
+        
         /////// si LS n'est pas vide = on récupère son contenu + on l'insère dans le tableau arrayCart + on le renvoit vers LS avec le nouveau contenu
         if (localStorage.getItem("products")) { ////// si LS non vide
             arrayCart = JSON.parse(localStorage.getItem("products")); ///// on récupère son contenu et on l'insère ds [arrayCart]
 
-            arrayCart.push(productChoice); ///// on push le produit sélectionné vers [arrayCart]
+            /////Si ds arrayCart il y a produit qui a même couleur + même ID -> on retourne le produit déjà existant sous forme de tableau
+            const elementExistingInArrayCart = arrayCart.filter(product => product.colorChoice === productChoice.colorChoice && product.idChoice === productChoice.idChoice)
+            //console.log("elementExistingInArrayCart", elementExistingInArrayCart);
 
-            for (element of arrayCart) { ///// pour chaque élément dans [arrayCart]
-                //console.log(elt.colorChoice);
-                //console.log(productChoice.colorChoice);
-
-                /////// si la couleur de l'élément déjà dans [arrayCart] == à la couleur de l'élément choisi ET si l'ID de l'élément déjà dans [arrayCart] == ID de l'élément choisi --> c'est le même article
-                if (element.colorChoice == productChoice.colorChoice && element.idChoice == productChoice.idChoice) {
-                    console.log("même couleur");
-                    arrayCart.pop() ///// on retire le dernier élément pushé dans [arrayCart] --> l'article qui est identique
-                    console.log(arrayCart);
-
-                    /*
-                    /////////////////// INCREMENTER numberChoice
-                    comment récupérer le 2ème nombre ? 
-                    comment additionner 1 er 2ème, etc nombre?
-                    Voir array créé dans page cart
-                    */
-
-
-                }else{
-                    arrayCart.push(productChoice); /////// on ajoute au tableau le produit choisi
+            // si le tableau retourné ds elementExistingInArrayCart est rempli = c'est qu'il y a un doublon
+            if (elementExistingInArrayCart.length){ 
+                // on ajoute la quantité choisie à la quantité déjà existante
+                let total = productChoice.numberChoice + elementExistingInArrayCart[0].numberChoice
+                console.log("il y a déjà ce produit dans le panier, On l'ajoute. Total de ce produit : ", total);
+                
+                //pour chaque produit dans arrayCart, si la couleur et l'id du produit nouveau est identique à la couleur et l'id d'un produit dékà existant -> la nouvelle quantité correspond à l'addition
+                for (product of arrayCart){
+                    if (product.colorChoice === productChoice.colorChoice && product.idChoice === productChoice.idChoice){
+                        product.numberChoice = total;
+                        console.log(arrayCart);
+                    }
                 }
-            }
-
-            localStorage.setItem("products", JSON.stringify(arrayCart)); /////// on envoi arrayCart au format JSON ds Localstorage
-            console.log("panier plein")
             
+            // si le tableau retourné dans elementExistingInArrayCart est vide = on push le nouveau produit
+            }else{
+                arrayCart.push(productChoice);
+            }
+            //on envoi ds localstorage le tableau au format JSON
+            localStorage.setItem("products", JSON.stringify(arrayCart));
+            console.log("panier rempli")
+
 
         } else{ ////// si LS est vide on le créé avec le produit ajouté
             arrayCart.push(productChoice); /////// on push le produit sélectionné vers [arrayCart]
@@ -134,27 +134,4 @@ function addArray(idProduct){
 
 
 
-// function addArray(idProduct){
-//     document.querySelector("#addToCart").addEventListener("click", () => {
-//         let productChoice = {
-//             colorChoice : document.querySelector("#colors").value,
-//             numberChoice : parseInt(document.querySelector("#quantity").value),
-//             idChoice : idProduct.id,
-//         }
-
-//         let arrayCart = [];
-
-//         //si LS n'est pas vide = on récupère son contenu + on l'insère dans le tableau arrayCart + on le renvoit vers LS avec le nouveau contenu
-//         if (localStorage.getItem("products")) {
-//             arrayCart = JSON.parse(localStorage.getItem("products"));
-//             arrayCart.push(productChoice);
-//             localStorage.setItem("products", JSON.stringify(arrayCart));
-
-//         } else{ // si LS est vide on le créé avec le produit ajouté
-//             arrayCart.push(productChoice);
-//             localStorage.setItem("products", JSON.stringify(arrayCart));
-//         }
-
-//     })
-// }
 
