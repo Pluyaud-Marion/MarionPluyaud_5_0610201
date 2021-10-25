@@ -1,3 +1,4 @@
+
 let productInStorage = JSON.parse(localStorage.getItem("products"));
 
 async function main(){

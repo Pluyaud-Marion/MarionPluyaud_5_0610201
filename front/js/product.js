@@ -26,7 +26,8 @@ async function main(){
     createTag(tags);
     displayElements(elements, tags);
     colorSofa(datasProduct, elements, tags);
-    addArray(idProduct);
+    addArray(idProduct, datasProduct);
+
 }
 
 main()
@@ -82,14 +83,18 @@ function colorSofa(datasProduct, elements, tags){
 }
 
 
-function addArray(idProduct){
-    document.querySelector("#addToCart").addEventListener("click", () => {
+function addArray(idProduct, datasProduct){
+    document.querySelector("#addToCart").addEventListener("click", (event) => {
+        event.preventDefault;
         let productChoice = {
             colorChoice : document.querySelector("#colors").value,
             quantityChoice : parseInt(document.querySelector("#quantity").value),
             idChoice : idProduct.id,
+            pictureChoice : datasProduct.imageUrl,
+            titleChoice : datasProduct.name,
+            priceChoice :  datasProduct.price,
         }
-        
+
         let arrayCart = [];
         
         /////// si LS n'est pas vide = on récupère son contenu + on l'insère dans le tableau arrayCart + on le renvoit vers LS avec le nouveau contenu
