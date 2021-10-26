@@ -85,7 +85,7 @@ function colorSofa(datasProduct, elements, tags){
 
 function addArray(idProduct, datasProduct){
     document.querySelector("#addToCart").addEventListener("click", (event) => {
-        event.preventDefault;
+        event.preventDefault();
         let productChoice = {
             colorChoice : document.querySelector("#colors").value,
             quantityChoice : parseInt(document.querySelector("#quantity").value),

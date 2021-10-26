@@ -1,9 +1,10 @@
 let productInStorage = JSON.parse(localStorage.getItem("products")); // récupération des éléments dans Localstorage
 
-//console.log(productInStorage);
+
 function main(){
     displayElements(productInStorage);
-    modifyCart(productInStorage);
+    modifyQuantity(productInStorage);
+    deleteQuantity(productInStorage)
     displayTotalPrice(productInStorage);
     displayTotalQuantity(productInStorage);
 }
@@ -27,7 +28,7 @@ function displayElements(productInStorage){
                     <div class="cart__item__content">
                     <div class="cart__item__content__titlePrice">
                         <h2>${sofa.titleChoice}</h2>
-                        <p>${sofa.colorChoice}</p> 
+                        <p>Couleur : ${sofa.colorChoice}</p> 
                         <p>${sofa.priceChoice}€</p>
                     </div>
                     <div class="cart__item__content__settings">
@@ -44,6 +45,62 @@ function displayElements(productInStorage){
         } 
     }
 }
+
+function modifyQuantity(productInStorage){
+    let tagQuantity = document.querySelectorAll(".itemQuantity"); // on cible les balises quantity
+
+    //Pour chaque balise quantité
+    tagQuantity.forEach(tag => {
+        let newQuantity = "";
+        let id = tag.closest("article").dataset.id; // récupération de l'id ds la balise article
+
+        tag.addEventListener('change', (event) => {
+            event.preventDefault();
+            newQuantity = parseInt(tag.value); // la nouvelle quantité est la value de la balise quantité
+       
+            productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
+                if (id == sofa.idChoice){ // pour cibler le canapé
+                    sofa.quantityChoice = newQuantity // la quantité des produits du panier se met à jour et devient égale à la nouvelle quantité
+                }
+            })
+
+        localStorage.setItem("products", JSON.stringify(productInStorage)); // on envoie le nouveau panier ds le local storage
+        displayTotalPrice(productInStorage);
+        displayTotalQuantity(productInStorage)
+        })
+    })
+}
+
+function deleteQuantity(productInStorage){
+    let tagDelete = document.querySelectorAll(".deleteItem"); // on cible les balises delete
+  
+    tagDelete.forEach(tag => {
+    
+        //let parent = tag.closest("article");
+        //let enfant = document.querySelectorAll(".cart__item");
+        let id = tag.closest("article").dataset.id; // récupération de l'id ds la balise article
+        console.log(id);
+        console.log("parent", parent);
+        console.log("enfant", enfant);
+        tag.addEventListener('click', (event) => {
+            event.preventDefault();
+           
+       
+            productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
+                
+                if (id == sofa.idChoice){ // pour cibler le canapé
+                   productInStorage.pop(sofa); // on retire ce canapé du panier   
+                
+                    //parent.removeChild(sofa.enfant);
+                }
+            })
+
+        localStorage.setItem("products", JSON.stringify(productInStorage)); // on envoie le nouveau panier ds le local storage
+        displayTotalPrice(productInStorage);
+        displayTotalQuantity(productInStorage)
+        })
+    })
+}
 /* Pour chaque canapé du LS on met dans le tableau vide la quantité choisie
 On additionne entre elles toutes les données du tableau
 On affiche dans la balise totalQuantity le résulat obtenu */
@@ -55,31 +112,6 @@ function displayTotalQuantity(productInStorage){
         const reducer = (previousValue, currentValue) => previousValue + currentValue;
         const totalQuantity = arrayQuantity.reduce(reducer)
         document.getElementById("totalQuantity").innerHTML = totalQuantity;
-    }
-}
-function modifyCart(productInStorage){
-    let tagQuantity = document.querySelectorAll(".itemQuantity");
-    let newQuantity = "";
-
-    for (tag of tagQuantity){ // pour chaque balise dans toutes les balises
-        //let id = tag.closest("article").dataset.id; // récupération de l'ID de chaque balise article
-        //console.log(id);
-
-        tag.addEventListener("change", (event) => {
-            event.preventDefault;
-            console.log("modification");
-            
-            for (product of productInStorage){ // pour chaque canapé dans le panier
-                //console.log(product.quantityChoice);
-            newQuantity = tag.value;
-            console.log("affichage newQuantity", newQuantity);
-
-            }
-            productInStorage.push(newQuantity)
-            console.log("affichage nouveau productInStorage", productInStorage);
-
-            //quand la value change : mettre à jour productInStorage et refaire setItem
-        })
     }
 }
 
@@ -98,7 +130,6 @@ function displayTotalPrice(productInStorage){
         document.getElementById("totalPrice").innerHTML = totalPrice
     }
 }
-
 
 
 main()
