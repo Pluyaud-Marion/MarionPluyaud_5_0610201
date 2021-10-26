@@ -1,25 +1,30 @@
 let productInStorage = JSON.parse(localStorage.getItem("products")); // récupération des éléments dans Localstorage
 
-
+/*
+fonction principale de la page
+*/
 function main(){
     displayElements(productInStorage);
     modifyQuantity(productInStorage);
     deleteQuantity(productInStorage)
     displayTotalPrice(productInStorage);
     displayTotalQuantity(productInStorage);
+    formulaire(productInStorage);
 }
 
+/*
+On part du tableau ProductInStorage = le panier récupéré du localstorage
+Si tableau vide : on modifie balise h1 pour indiquer panier vide
+Si tableau plein : pour chaque canapé du tableau on affiche les éléments avec innerHTML
++ ajout balise color
+*/
 function displayElements(productInStorage){
-
-    //vérification si panier vide ou plein
     if (productInStorage.length == 0){
         document.querySelector("h1").innerHTML = "Le panier est vide"
-
-    } else { // si panier plein = affichage des éléments
-        for (sofa of productInStorage){ // pour chaque canapé dans localstorage on affiche les éléments
-
+    } else { 
+        for (sofa of productInStorage){ 
             let selectTagSection = document.getElementById("cart__items"); 
-            //rajout de la balise color
+
             selectTagSection.innerHTML += `
                 <article class="cart__item" data-id="${sofa.idChoice}">
                     <div class="cart__item__img">
@@ -46,50 +51,60 @@ function displayElements(productInStorage){
     }
 }
 
+/* 
+On part du tableau ProductInStorage = le panier récupéré du localstorage
+Pour chaque balise quantity, on récupère l'id de l'élément avec closest,
+Au "change" sur la balise on définit la nouvelle quantité (la value du tag) et on la met ds une variable
+On cible le canapé sur lequel on modifie quantité avec la condition
+On donne ds productInStorage la nouvelle valeur à quantityChoice de ce canapé
+On envoi le nouveau productInStorage ds LocalStorage
+*/
 function modifyQuantity(productInStorage){
-    let tagQuantity = document.querySelectorAll(".itemQuantity"); // on cible les balises quantity
-
-    //Pour chaque balise quantité
+    let tagQuantity = document.querySelectorAll(".itemQuantity");
     tagQuantity.forEach(tag => {
         let newQuantity = "";
-        let id = tag.closest("article").dataset.id; // récupération de l'id ds la balise article
+        let id = tag.closest("article").dataset.id; 
 
         tag.addEventListener('change', (event) => {
             event.preventDefault();
             newQuantity = parseInt(tag.value); // la nouvelle quantité est la value de la balise quantité
        
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
-                if (id == sofa.idChoice){ // pour cibler le canapé
+                if (id == sofa.idChoice){ 
                     sofa.quantityChoice = newQuantity // la quantité des produits du panier se met à jour et devient égale à la nouvelle quantité
                 }
             })
 
-        localStorage.setItem("products", JSON.stringify(productInStorage)); // on envoie le nouveau panier ds le local storage
+        localStorage.setItem("products", JSON.stringify(productInStorage)); 
         displayTotalPrice(productInStorage);
         displayTotalQuantity(productInStorage)
         })
     })
 }
 
+/* 
+On part du tableau ProductInStorage = le panier récupéré du localstorage
+Pour chaque balise delete, on récupère l'id de l'élément avec closest,
+au click sur la balise on cible le canapé à supprimer avec la condition
+on récupère l'index ds productInStorage de ce canapé + on le supprime. 
+On envoi le nouveau productInStorage ds LocalStorage
+*/
 function deleteQuantity(productInStorage){
-    let tagDelete = document.querySelectorAll(".deleteItem"); // on cible les balises delete
-  
+    let tagDelete = document.querySelectorAll(".deleteItem"); 
     tagDelete.forEach(tag => {
-    
-        let id = tag.closest("article").dataset.id; // récupération de l'id ds la balise article
+        let id = tag.closest("article").dataset.id; 
     
         tag.addEventListener('click', (event) => {
             event.preventDefault();
        
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
-               
-                if (id == sofa.idChoice){ // pour cibler le canapé
+                if (id == sofa.idChoice){ 
                     let index = productInStorage.indexOf(sofa) // récupération index du canapé
                     productInStorage.splice(index, 1); // on retire ce canapé du panier   
                 }
             })
 
-        localStorage.setItem("products", JSON.stringify(productInStorage)); // on envoie le nouveau panier ds le local storage
+        localStorage.setItem("products", JSON.stringify(productInStorage)); 
 
         window.location.reload(); // rechargement de la page
         displayTotalPrice(productInStorage);
@@ -128,5 +143,85 @@ function displayTotalPrice(productInStorage){
     }
 }
 
+function formulaire(productInStorage){
+    const buttonValidate = document.getElementById("order");
+    
+    buttonValidate.addEventListener('click', (event) => {
+       event.preventDefault();
+        const contact = {
+            firstName : "",
+            lastName : "",
+            address : "",
+            city : "", 
+            email : ""
+        }
+        let products = [];
+        contact.firstName = document.querySelector('#firstName').value;
+        contact.lastName = document.querySelector('#lastName').value;
+        contact.address = document.querySelector('#address').value;
+        contact.city = document.querySelector('#city').value;
+        contact.email = document.querySelector('#email').value;
+      
+        //console.log(contact);
+
+        for (sofa of productInStorage){
+            let productId = sofa.idChoice;
+            products.push(productId)
+        }
+
+        //console.log(arrayProductId);
+       
+        fetch("http://localhost:3000/api/products/order", {
+            method : "POST",
+            headers : {"Content-Type" : "application/json"},
+            body : JSON.stringify({contact, products}), 
+            
+        })
+        .then(response => response.json())
+        .then(data => {
+            let orderId = data.orderId;
+            console.log(orderId);
+            window.location = `confirmation.html?orderId=${data.orderId}`
+            
+            
+        })
+        .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));
+     
+    })
+
+}
+
+// function formulaire(productInStorage){
+//     const buttonValidate = document.getElementById("order");
+    
+//     const contact = {
+//         firstName : "",
+//         lastName : "",
+//         address : "",
+//         city : "", 
+//         email : ""
+//     }
+    
+//     let arrayProductId = [];
+
+//     buttonValidate.addEventListener('click', (event) => {
+//         event.preventDefault();
+
+//         contact.firstName = document.querySelector('#firstName').value;
+//         contact.lastName = document.querySelector('#lastName').value;
+//         contact.address = document.querySelector('#address').value;
+//         contact.city = document.querySelector('#city').value;
+//         contact.email = document.querySelector('#email').value;
+      
+//         console.log(contact);
+
+//         for (sofa of productInStorage){
+//             let productId = sofa.idChoice;
+//             arrayProductId.push(productId)
+//         }
+
+//         console.log(arrayProductId);
+//     })
+// }
 
 main()
