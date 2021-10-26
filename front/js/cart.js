@@ -12,7 +12,7 @@ function main(){
 function displayElements(productInStorage){
 
     //vérification si panier vide ou plein
-    if (productInStorage === null){
+    if (productInStorage.length == 0){
         document.querySelector("h1").innerHTML = "Le panier est vide"
 
     } else { // si panier plein = affichage des éléments
@@ -76,28 +76,25 @@ function deleteQuantity(productInStorage){
   
     tagDelete.forEach(tag => {
     
-        //let parent = tag.closest("article");
-        //let enfant = document.querySelectorAll(".cart__item");
         let id = tag.closest("article").dataset.id; // récupération de l'id ds la balise article
-        console.log(id);
-        console.log("parent", parent);
-        console.log("enfant", enfant);
+    
         tag.addEventListener('click', (event) => {
             event.preventDefault();
-           
        
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
-                
+               
                 if (id == sofa.idChoice){ // pour cibler le canapé
-                   productInStorage.pop(sofa); // on retire ce canapé du panier   
-                
-                    //parent.removeChild(sofa.enfant);
+                    let index = productInStorage.indexOf(sofa) // récupération index du canapé
+                    productInStorage.splice(index, 1); // on retire ce canapé du panier   
                 }
             })
 
         localStorage.setItem("products", JSON.stringify(productInStorage)); // on envoie le nouveau panier ds le local storage
+
+        window.location.reload(); // rechargement de la page
         displayTotalPrice(productInStorage);
-        displayTotalQuantity(productInStorage)
+        displayTotalQuantity(productInStorage);
+        
         })
     })
 }
