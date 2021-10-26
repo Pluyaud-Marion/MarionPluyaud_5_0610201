@@ -9,7 +9,7 @@ function main(){
     deleteQuantity(productInStorage)
     displayTotalPrice(productInStorage);
     displayTotalQuantity(productInStorage);
-    formulaire(productInStorage);
+    sendForm(productInStorage);
 }
 
 /*
@@ -143,7 +143,7 @@ function displayTotalPrice(productInStorage){
     }
 }
 
-function formulaire(productInStorage){
+function sendForm(productInStorage){
     const buttonValidate = document.getElementById("order");
     
     buttonValidate.addEventListener('click', (event) => {
@@ -155,73 +155,30 @@ function formulaire(productInStorage){
             city : "", 
             email : ""
         }
+
         let products = [];
         contact.firstName = document.querySelector('#firstName').value;
         contact.lastName = document.querySelector('#lastName').value;
         contact.address = document.querySelector('#address').value;
         contact.city = document.querySelector('#city').value;
         contact.email = document.querySelector('#email').value;
-      
-        //console.log(contact);
-
+    
         for (sofa of productInStorage){
             let productId = sofa.idChoice;
             products.push(productId)
         }
-
-        //console.log(arrayProductId);
        
         fetch("http://localhost:3000/api/products/order", {
             method : "POST",
             headers : {"Content-Type" : "application/json"},
             body : JSON.stringify({contact, products}), 
-            
         })
         .then(response => response.json())
         .then(data => {
-            let orderId = data.orderId;
-            console.log(orderId);
-            window.location = `confirmation.html?orderId=${data.orderId}`
-            
-            
+            window.location = `confirmation.html?orderId=${data.orderId}` // redirection vers page confirmation
         })
-        .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));
-     
+        .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));  
     })
-
 }
-
-// function formulaire(productInStorage){
-//     const buttonValidate = document.getElementById("order");
-    
-//     const contact = {
-//         firstName : "",
-//         lastName : "",
-//         address : "",
-//         city : "", 
-//         email : ""
-//     }
-    
-//     let arrayProductId = [];
-
-//     buttonValidate.addEventListener('click', (event) => {
-//         event.preventDefault();
-
-//         contact.firstName = document.querySelector('#firstName').value;
-//         contact.lastName = document.querySelector('#lastName').value;
-//         contact.address = document.querySelector('#address').value;
-//         contact.city = document.querySelector('#city').value;
-//         contact.email = document.querySelector('#email').value;
-      
-//         console.log(contact);
-
-//         for (sofa of productInStorage){
-//             let productId = sofa.idChoice;
-//             arrayProductId.push(productId)
-//         }
-
-//         console.log(arrayProductId);
-//     })
-// }
 
 main()
