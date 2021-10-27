@@ -164,14 +164,7 @@ function sendForm(productInStorage, contact){
     })
     .then(response => response.json())
     .then(data => {
-       // if () {
-
-      //  }else{
-
-       // }
-
-            //si tout est ok > redirection 
-        //window.location = `confirmation.html?orderId=${data.orderId}` // redirection vers page confirmation
+        window.location = `confirmation.html?orderId=${data.orderId}` // redirection vers page confirmation
     })
     .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));   
 }
@@ -180,7 +173,7 @@ function sendForm(productInStorage, contact){
 Récupère les valeurs des champs des formulaires
 Appelle la fonction verifyForm avec les bons paramètres pour vérifier chaque champ et afficher les messsages d'erreur
 Créé un objet contact avec les values du formulaire
-Appelle la fonction d'envoi du formulaire
+Appelle la fonction d'envoi du formulaire si la  vérification est ok
 */
 function validateForm(){
     const buttonValidate = document.getElementById("order");
@@ -218,9 +211,15 @@ function validateForm(){
             email : mail,
         }
 
-        sendForm(productInStorage, contact);
+        //si le formulaire est valide -> appel de la fonction sendForm
+        if (verifyForm(prenom, firstNameErrorMsg, regexNameCity) && verifyForm(nom, lastNameErrorMsg, regexNameCity) && verifyForm(adresse, addressErrorMsg, regexAddress) && verifyForm(ville, cityErrorMsg, regexNameCity) && verifyForm(mail, emailErrorMsg, regexEmail)) {
+            sendForm(productInStorage, contact);
+        }else{
+            console.log("le formulaire n'est pas conforme");
+        }
     })
 }
+
 
 /*
 Fonction qu'on appellera pour chaque champ du formulaire pour vérifier le champ 
@@ -228,10 +227,13 @@ Fonction qu'on appellera pour chaque champ du formulaire pour vérifier le champ
 function verifyForm(elementContact, elementError, elementRegex){
     if(elementContact.length == 0){ // si le champ de l'input est vide
         elementError.innerHTML = "Veuillez renseigner ce champ";
+        return false
     } else if (!elementRegex.test(elementContact)){ // si champ rempli mais regex non valide
         elementError.innerHTML = "Format incorrect";
+        return false
     } else{ // champ ok
         elementError.innerHTML = "";
+        return true
     }
 }
 
