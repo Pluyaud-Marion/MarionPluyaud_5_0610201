@@ -1,15 +1,18 @@
-let productInStorage = JSON.parse(localStorage.getItem("products")); // récupération des éléments dans Localstorage
+
+let productInStorage = JSON.parse(localStorage.getItem("products")) || []; // récupération des éléments dans Localstorage
 
 /*
 fonction principale de la page
 */
 function main(){
+ 
     displayElements(productInStorage);
     modifyQuantity(productInStorage);
     deleteQuantity(productInStorage)
     displayTotalPrice(productInStorage);
     displayTotalQuantity(productInStorage);
-    sendForm(productInStorage);
+   
+    validateForm();
 }
 
 /*
@@ -20,7 +23,7 @@ Si tableau plein : pour chaque canapé du tableau on affiche les éléments avec
 */
 function displayElements(productInStorage){
     if (productInStorage.length == 0){
-        document.querySelector("h1").innerHTML = "Le panier est vide"
+       document.querySelector("h1").innerHTML = "Le panier est vide"
     } else { 
         for (sofa of productInStorage){ 
             let selectTagSection = document.getElementById("cart__items"); 
@@ -142,43 +145,96 @@ function displayTotalPrice(productInStorage){
         document.getElementById("totalPrice").innerHTML = totalPrice
     }
 }
+/* Fonction va envoyer le formulaire à l'API avec les éléments : 
+-> products = un tableau qui contient les ID
+-> contact = un objet qui contient les données du formulaires vérifiées
+*/
+function sendForm(productInStorage, contact){
+    let products = [];
 
-function sendForm(productInStorage){
+    for (sofa of productInStorage){
+        let productId = sofa.idChoice;
+        products.push(productId)
+    }
+ 
+    fetch("http://localhost:3000/api/products/order", {
+        method : "POST",
+        headers : {"Content-Type" : "application/json"},
+        body : JSON.stringify({contact, products}), 
+    })
+    .then(response => response.json())
+    .then(data => {
+       // if () {
+
+      //  }else{
+
+       // }
+
+            //si tout est ok > redirection 
+        window.location = `confirmation.html?orderId=${data.orderId}` // redirection vers page confirmation
+    })
+    .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));   
+}
+
+/* Au clic : 
+Récupère les valeurs des champs des formulaires
+Appelle la fonction verifyForm avec les bons paramètres pour vérifier chaque champ et afficher les messsages d'erreur
+Créé un objet contact avec les values du formulaire
+Appelle la fonction d'envoi du formulaire
+*/
+function validateForm(){
     const buttonValidate = document.getElementById("order");
-    
+
+    const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
+    const lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
+    const addressErrorMsg = document.getElementById("addressErrorMsg");
+    const cityErrorMsg = document.getElementById("cityErrorMsg");
+    const emailErrorMsg = document.getElementById("emailErrorMsg");
+
+    const regexName = /^[A-Za-zÀ-ÿ]{3,20}$/;
+    const regexAddress = /^[#.0-9a-zA-Z\s,-]+$/;
+    const regexCity = /^[A-Za-zÀ-ÿ]{2,20}$/;
+    const regexEmail = /^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$/;
+
     buttonValidate.addEventListener('click', (event) => {
-       event.preventDefault();
+        event.preventDefault();
+
+        prenom = document.querySelector('#firstName').value;
+        nom = document.querySelector('#lastName').value;
+        adresse = document.querySelector('#address').value;
+        ville = document.querySelector('#city').value;
+        mail = document.querySelector('#email').value
+
+        verifyForm(prenom, firstNameErrorMsg, regexName);
+        verifyForm(nom, lastNameErrorMsg, regexName);
+        verifyForm(adresse, addressErrorMsg, regexAddress);
+        verifyForm(ville, cityErrorMsg, regexCity);
+        verifyForm(mail, emailErrorMsg, regexEmail)
+
         const contact = {
-            firstName : "",
-            lastName : "",
-            address : "",
-            city : "", 
-            email : ""
+            firstName : prenom,
+            lastName : nom,
+            address : adresse,
+            city : ville,
+            email : mail,
         }
 
-        let products = [];
-        contact.firstName = document.querySelector('#firstName').value;
-        contact.lastName = document.querySelector('#lastName').value;
-        contact.address = document.querySelector('#address').value;
-        contact.city = document.querySelector('#city').value;
-        contact.email = document.querySelector('#email').value;
-    
-        for (sofa of productInStorage){
-            let productId = sofa.idChoice;
-            products.push(productId)
-        }
-       
-        fetch("http://localhost:3000/api/products/order", {
-            method : "POST",
-            headers : {"Content-Type" : "application/json"},
-            body : JSON.stringify({contact, products}), 
-        })
-        .then(response => response.json())
-        .then(data => {
-            window.location = `confirmation.html?orderId=${data.orderId}` // redirection vers page confirmation
-        })
-        .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));  
+        sendForm(productInStorage, contact);
     })
 }
+
+/*
+Fonction qu'on appellera pour chaque champ du formulaire pour vérifier le champ 
+*/
+function verifyForm(elementContact, elementError, elementRegex){
+    if(elementContact.length == 0){ // si le champ de l'input est vide
+        elementError.innerHTML = "Veuillez renseigner ce champ";
+    } else if (!elementRegex.test(elementContact)){ // si champ rempli mais regex non valide
+        elementError.innerHTML = "Format incorrect";
+    } else{ // champ ok
+        elementError.innerHTML = "";
+    }
+}
+
 
 main()
