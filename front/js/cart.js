@@ -171,7 +171,7 @@ function sendForm(productInStorage, contact){
        // }
 
             //si tout est ok > redirection 
-        window.location = `confirmation.html?orderId=${data.orderId}` // redirection vers page confirmation
+        //window.location = `confirmation.html?orderId=${data.orderId}` // redirection vers page confirmation
     })
     .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));   
 }
@@ -191,9 +191,8 @@ function validateForm(){
     const cityErrorMsg = document.getElementById("cityErrorMsg");
     const emailErrorMsg = document.getElementById("emailErrorMsg");
 
-    const regexName = /^[A-Za-zÀ-ÿ]{3,20}$/;
+    const regexNameCity = /^([A-Za-zÀ-ÿ]{3,20})?([-]{0,1})?([A-Za-zÀ-ÿ]{3,20})$/;
     const regexAddress = /^[#.0-9a-zA-Z\s,-]+$/;
-    const regexCity = /^[A-Za-zÀ-ÿ]{2,20}$/;
     const regexEmail = /^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$/;
 
     buttonValidate.addEventListener('click', (event) => {
@@ -205,10 +204,10 @@ function validateForm(){
         ville = document.querySelector('#city').value;
         mail = document.querySelector('#email').value
 
-        verifyForm(prenom, firstNameErrorMsg, regexName);
-        verifyForm(nom, lastNameErrorMsg, regexName);
+        verifyForm(prenom, firstNameErrorMsg, regexNameCity);
+        verifyForm(nom, lastNameErrorMsg, regexNameCity);
         verifyForm(adresse, addressErrorMsg, regexAddress);
-        verifyForm(ville, cityErrorMsg, regexCity);
+        verifyForm(ville, cityErrorMsg, regexNameCity);
         verifyForm(mail, emailErrorMsg, regexEmail)
 
         const contact = {
