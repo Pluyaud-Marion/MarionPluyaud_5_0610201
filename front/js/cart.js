@@ -1,6 +1,8 @@
+let productInStorage = [];
 
-//let panier = 
-let productInStorage = JSON.parse(localStorage.getItem("products")) || []; // récupération des éléments dans Localstorage
+if(productInStorage.length === 0){
+    productInStorage = JSON.parse(localStorage.getItem("products"))
+}
 
 /*
 fonction principale de la page
@@ -23,38 +25,35 @@ Si tableau plein : pour chaque canapé du tableau on affiche les éléments avec
 + ajout balise color
 */
 function displayElements(productInStorage){
-    if (productInStorage.length === 0){
-       document.querySelector("h1").innerHTML = "Le panier est vide"
-    } else { 
-        for (let sofa of productInStorage){ 
-            let selectTagSection = document.getElementById("cart__items"); 
+    for (let sofa of productInStorage){ 
+        let selectTagSection = document.getElementById("cart__items"); 
 
-            selectTagSection.innerHTML += `
-                <article class="cart__item" data-id="${sofa.idChoice}" data-color="${sofa.colorChoice}">
-                    <div class="cart__item__img">
-                        <img src="${sofa.pictureChoice}" alt="Photographie d'un canapé">
+        selectTagSection.innerHTML += `
+            <article class="cart__item" data-id="${sofa.idChoice}" data-color="${sofa.colorChoice}">
+                <div class="cart__item__img">
+                    <img src="${sofa.pictureChoice}" alt="Photographie d'un canapé">
+                </div>
+                    
+                <div class="cart__item__content">
+                    
+                    <div class="cart__item__content__titlePrice">
+                        <h2>${sofa.titleChoice}</h2>
+                        <p>Couleur : ${sofa.colorChoice}</p>
+                        <p>${sofa.priceChoice}€</p>
                     </div>
-                     
-                    <div class="cart__item__content">
-                        
-                        <div class="cart__item__content__titlePrice">
-                            <h2>${sofa.titleChoice}</h2>
-                            <p>Couleur : ${sofa.colorChoice}</p>
-                            <p>${sofa.priceChoice}€</p>
+                    <div class="cart__item__content__settings">
+                        <div class="cart__item__content__settings__quantity">
+                            <p>Qté : </p>
+                            <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${sofa.quantityChoice}">
                         </div>
-                        <div class="cart__item__content__settings">
-                            <div class="cart__item__content__settings__quantity">
-                                <p>Qté : </p>
-                                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${sofa.quantityChoice}">
-                            </div>
-                            <div class="cart__item__content__settings__delete">
-                                <p class="deleteItem">Supprimer</p>
-                            </div>
+                        <div class="cart__item__content__settings__delete">
+                            <p class="deleteItem">Supprimer</p>
                         </div>
                     </div>
-                </article>`
-        } 
-    }
+                </div>
+            </article>`
+    } 
+   
 }
 
 /* 
@@ -246,7 +245,7 @@ function validateForm(){
 Fonction qu'on appellera pour chaque champ du formulaire pour vérifier le champ 
 */
 function verifyForm(elementContact, elementError, elementRegex){
-    if(elementContact.length == 0){ // si le champ de l'input est vide
+    if(elementContact.length === 0){ // si le champ de l'input est vide
         elementError.innerHTML = "Veuillez renseigner ce champ";
         return false
     } else if (!elementRegex.test(elementContact)){ // si champ rempli mais regex non valide
