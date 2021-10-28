@@ -1,4 +1,5 @@
 
+//let panier = 
 let productInStorage = JSON.parse(localStorage.getItem("products")) || []; // récupération des éléments dans Localstorage
 
 /*
@@ -36,7 +37,7 @@ function displayElements(productInStorage){
                     <div class="cart__item__content">
                     <div class="cart__item__content__titlePrice">
                         <h2>${sofa.titleChoice}</h2>
-                        <p>Couleur : ${sofa.colorChoice}</p> 
+                        <span class='${sofa.colorChoice}' data-id="color" >Couleur : ${sofa.colorChoice}</span> 
                         <p>${sofa.priceChoice}€</p>
                     </div>
                     <div class="cart__item__content__settings">
@@ -62,6 +63,7 @@ On cible le canapé sur lequel on modifie quantité avec la condition
 On donne ds productInStorage la nouvelle valeur à quantityChoice de ce canapé
 On envoi le nouveau productInStorage ds LocalStorage
 */
+
 function modifyQuantity(productInStorage){
     let tagQuantity = document.querySelectorAll(".itemQuantity");
     tagQuantity.forEach(tag => {
@@ -84,6 +86,41 @@ function modifyQuantity(productInStorage){
         })
     })
 }
+// function modifyQuantity(productInStorage){
+//     let tagQuantity = document.querySelectorAll(".itemQuantity");
+//     tagQuantity.forEach(tag => {
+//         let newQuantity = "";
+//         let id = tag.closest("article").dataset.id; 
+//         let colors = document.querySelectorAll('p[data-id="color"]')
+//         let test = tag.closest('article > span')
+//         console.log(test);
+
+//         tag.addEventListener('change', event => {
+//             event.preventDefault();
+//             newQuantity = Number(tag.value); // la nouvelle quantité est la value de la balise quantité
+            
+//             colors.forEach(color => {
+
+//                 productInStorage.forEach(sofa => {
+//                     if (id === sofa.idChoice && sofa.colorChoice === color.className){ 
+//                         console.log('condition ok');
+
+//                         sofa.quantityChoice = newQuantity // la quantité des produits du panier se met à jour et devient égale à la nouvelle quantité
+//                     }
+//                 })
+                
+//             })
+
+//         localStorage.setItem("products", JSON.stringify(productInStorage)); 
+//         displayTotalPrice(productInStorage);
+//         displayTotalQuantity(productInStorage)
+//         })
+//     })
+// }
+///////EXEMPLE FONCTION FLECHEE /////
+// const modifyQuantity = (productInStorage) => {
+
+// }
 
 /* 
 On part du tableau ProductInStorage = le panier récupéré du localstorage
@@ -94,31 +131,33 @@ On envoi le nouveau productInStorage ds LocalStorage
 */
 function deleteQuantity(productInStorage){
     let tagDelete = document.querySelectorAll(".deleteItem"); 
+    
     tagDelete.forEach(tag => {
         let id = tag.closest("article").dataset.id; 
+        let article = tag.closest("article");
     
-        tag.addEventListener('click', (event) => {
+        tag.addEventListener('click', event => {
             event.preventDefault();
-       
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
-                if (id == sofa.idChoice){ 
+                if (id === sofa.idChoice){ 
                     let index = productInStorage.indexOf(sofa) // récupération index du canapé
                     productInStorage.splice(index, 1); // on retire ce canapé du panier   
+                    article.remove(); // supprime du DOM
                 }
             })
 
         localStorage.setItem("products", JSON.stringify(productInStorage)); 
 
-        window.location.reload(); // rechargement de la page
         displayTotalPrice(productInStorage);
         displayTotalQuantity(productInStorage);
-        
         })
     })
 }
+
 /* Pour chaque canapé du LS on met dans le tableau vide la quantité choisie
 On additionne entre elles toutes les données du tableau
-On affiche dans la balise totalQuantity le résulat obtenu */
+On affiche dans la balise totalQuantity le résulat obtenu 
+*/
 function displayTotalQuantity(productInStorage){
     
     const arrayQuantity = [];
@@ -127,12 +166,20 @@ function displayTotalQuantity(productInStorage){
         const reducer = (previousValue, currentValue) => previousValue + currentValue;
         const totalQuantity = arrayQuantity.reduce(reducer)
         document.getElementById("totalQuantity").innerHTML = totalQuantity;
+        
+    }
+
+    if(arrayQuantity.length === 0){
+        document.querySelector("h1").innerHTML = "Le panier est vide";
+        totalQuantity = "";
+        document.getElementById("totalQuantity").innerHTML = totalQuantity;
     }
 }
 
 /* Pour chaque canapé du LS on récupère le prix et la quantité et on les multiplie
    on met la quantité obtenue dans le tableau vide et on additionne tous les chiffres du tableau
-    on affiche ds la balise totalPrice le résultat obtenue */
+    on affiche ds la balise totalPrice le résultat obtenu
+*/
 function displayTotalPrice(productInStorage){
     let totalPriceQuantity = "";
     let arrayPrice = [];
@@ -143,6 +190,10 @@ function displayTotalPrice(productInStorage){
         const reducer = (previousValue, currentValue) => previousValue + currentValue;
         const totalPrice = arrayPrice.reduce(reducer);
         document.getElementById("totalPrice").innerHTML = totalPrice
+    }
+    if(arrayPrice.length === 0){
+        totalPriceQuantity = "";
+        document.getElementById("totalPrice").innerHTML = totalPriceQuantity;
     }
 }
 /* Fonction va envoyer le formulaire à l'API avec les éléments : 
@@ -183,12 +234,12 @@ function validateForm(){
     const addressErrorMsg = document.getElementById("addressErrorMsg");
     const cityErrorMsg = document.getElementById("cityErrorMsg");
     const emailErrorMsg = document.getElementById("emailErrorMsg");
+    
+    const regexNameCity = /^[a-zA-ZÀ-ÿ_-]{2,60}$/
+    const regexAddress = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,60}$/;
+    const regexEmail = /^[^@\s]{2,30}@[^@\s]{2,30}\.[^@\s]{2,5}$/;
 
-    const regexNameCity = /^([A-Za-zÀ-ÿ]{3,20})?([-]{0,1})?([A-Za-zÀ-ÿ]{3,20})$/;
-    const regexAddress = /^[#.0-9a-zA-Z\s,-]+$/;
-    const regexEmail = /^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$/;
-
-    buttonValidate.addEventListener('click', (event) => {
+    buttonValidate.addEventListener('click', event => {
         event.preventDefault();
 
         prenom = document.querySelector('#firstName').value;

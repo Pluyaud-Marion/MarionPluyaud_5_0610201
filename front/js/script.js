@@ -2,10 +2,7 @@
 async function main(){
     const datas = await fetchData(); // met dans constante datas les données retournées par fetch
     if (!datas) return
-    /**
-     * @type {{tagSection: object, tagImg: object, tagh3 : object, tagP : object, iDom : object, tagA : object}}
-
-     */
+    
     const tags = { 
         tagSection : {},
         tagImg : {},
