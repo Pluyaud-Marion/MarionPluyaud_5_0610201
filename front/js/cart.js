@@ -23,32 +23,34 @@ Si tableau plein : pour chaque canapé du tableau on affiche les éléments avec
 + ajout balise color
 */
 function displayElements(productInStorage){
-    if (productInStorage.length == 0){
+    if (productInStorage.length === 0){
        document.querySelector("h1").innerHTML = "Le panier est vide"
     } else { 
-        for (sofa of productInStorage){ 
+        for (let sofa of productInStorage){ 
             let selectTagSection = document.getElementById("cart__items"); 
 
             selectTagSection.innerHTML += `
-                <article class="cart__item" data-id="${sofa.idChoice}">
+                <article class="cart__item" data-id="${sofa.idChoice}" data-color="${sofa.colorChoice}">
                     <div class="cart__item__img">
-                    <img src="${sofa.pictureChoice}" alt="Photographie d'un canapé">
+                        <img src="${sofa.pictureChoice}" alt="Photographie d'un canapé">
                     </div>
+                     
                     <div class="cart__item__content">
-                    <div class="cart__item__content__titlePrice">
-                        <h2>${sofa.titleChoice}</h2>
-                        <p class='${sofa.colorChoice}' data-id="color" >Couleur : ${sofa.colorChoice}</p> 
-                        <p>${sofa.priceChoice}€</p>’
-                    </div>
-                    <div class="cart__item__content__settings">
-                        <div class="cart__item__content__settings__quantity">
-                        <p>Qté : </p>
-                        <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${sofa.quantityChoice}">
+                        
+                        <div class="cart__item__content__titlePrice">
+                            <h2>${sofa.titleChoice}</h2>
+                            <p>Couleur : ${sofa.colorChoice}</p>
+                            <p>${sofa.priceChoice}€</p>
                         </div>
-                        <div class="cart__item__content__settings__delete">
-                        <p class="deleteItem">Supprimer</p>
+                        <div class="cart__item__content__settings">
+                            <div class="cart__item__content__settings__quantity">
+                                <p>Qté : </p>
+                                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${sofa.quantityChoice}">
+                            </div>
+                            <div class="cart__item__content__settings__delete">
+                                <p class="deleteItem">Supprimer</p>
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </article>`
         } 
@@ -57,69 +59,38 @@ function displayElements(productInStorage){
 
 /* 
 On part du tableau ProductInStorage = le panier récupéré du localstorage
-Pour chaque balise quantity, on récupère l'id de l'élément avec closest,
+Pour chaque balise quantity, on récupère le data-id de l'élément avec closest, et le data-color
 Au "change" sur la balise on définit la nouvelle quantité (la value du tag) et on la met ds une variable
-On cible le canapé sur lequel on modifie quantité avec la condition
+On cible le canapé sur lequel on modifie quantité avec la double condition
 On donne ds productInStorage la nouvelle valeur à quantityChoice de ce canapé
 On envoi le nouveau productInStorage ds LocalStorage
 */
 
-function modifyQuantity(productInStorage){
+const modifyQuantity = (productInStorage) =>{
     let tagQuantity = document.querySelectorAll(".itemQuantity");
     tagQuantity.forEach(tag => {
         let newQuantity = "";
         let id = tag.closest("article").dataset.id; 
+        let color = tag.closest('article').dataset.color;
 
-        tag.addEventListener('change', (event) => {
+        tag.addEventListener('change', event => {
             event.preventDefault();
-            newQuantity = parseInt(tag.value); // la nouvelle quantité est la value de la balise quantité
+            newQuantity = Number(tag.value); // la nouvelle quantité est la value de la balise quantité
        
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
-                if (id == sofa.idChoice){ 
+                
+                if (id === sofa.idChoice && sofa.colorChoice === color){ 
                     sofa.quantityChoice = newQuantity // la quantité des produits du panier se met à jour et devient égale à la nouvelle quantité
                 }
             })
 
         localStorage.setItem("products", JSON.stringify(productInStorage)); 
+
         displayTotalPrice(productInStorage);
         displayTotalQuantity(productInStorage)
         })
     })
 }
-// function modifyQuantity(productInStorage){
-//     let tagQuantity = document.querySelectorAll(".itemQuantity");
-//     tagQuantity.forEach(tag => {
-//         let newQuantity = "";
-//         let id = tag.closest("article").dataset.id; 
-//         let colors = document.querySelectorAll('p[data-id="color"]')
-//         console.log(colors);
-
-//         tag.addEventListener('change', event => {
-//             event.preventDefault();
-//             newQuantity = Number(tag.value); // la nouvelle quantité est la value de la balise quantité
-            
-//             colors.forEach(color => {
-
-//                 productInStorage.forEach(sofa => {
-//                     if (id === sofa.idChoice && sofa.colorChoice === color.className){ 
-//                         console.log('condition ok');
-
-//                         sofa.quantityChoice = newQuantity // la quantité des produits du panier se met à jour et devient égale à la nouvelle quantité
-//                     }
-//                 })
-                
-//             })
-
-//         localStorage.setItem("products", JSON.stringify(productInStorage)); 
-//         displayTotalPrice(productInStorage);
-//         displayTotalQuantity(productInStorage)
-//         })
-//     })
-// }
-///////EXEMPLE FONCTION FLECHEE /////
-// const modifyQuantity = (productInStorage) => {
-
-// }
 
 /* 
 On part du tableau ProductInStorage = le panier récupéré du localstorage
@@ -128,7 +99,7 @@ au click sur la balise on cible le canapé à supprimer avec la condition
 on récupère l'index ds productInStorage de ce canapé + on le supprime. 
 On envoi le nouveau productInStorage ds LocalStorage
 */
-function deleteQuantity(productInStorage){
+const deleteQuantity = (productInStorage) => {
     let tagDelete = document.querySelectorAll(".deleteItem"); 
     
     tagDelete.forEach(tag => {
