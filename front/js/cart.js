@@ -37,8 +37,8 @@ function displayElements(productInStorage){
                     <div class="cart__item__content">
                     <div class="cart__item__content__titlePrice">
                         <h2>${sofa.titleChoice}</h2>
-                        <span class='${sofa.colorChoice}' data-id="color" >Couleur : ${sofa.colorChoice}</span> 
-                        <p>${sofa.priceChoice}€</p>
+                        <p class='${sofa.colorChoice}' data-id="color" >Couleur : ${sofa.colorChoice}</p> 
+                        <p>${sofa.priceChoice}€</p>’
                     </div>
                     <div class="cart__item__content__settings">
                         <div class="cart__item__content__settings__quantity">
@@ -92,8 +92,7 @@ function modifyQuantity(productInStorage){
 //         let newQuantity = "";
 //         let id = tag.closest("article").dataset.id; 
 //         let colors = document.querySelectorAll('p[data-id="color"]')
-//         let test = tag.closest('article > span')
-//         console.log(test);
+//         console.log(colors);
 
 //         tag.addEventListener('change', event => {
 //             event.preventDefault();
