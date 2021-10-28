@@ -104,26 +104,30 @@ const deleteQuantity = (productInStorage) => {
     tagDelete.forEach(tag => {
         let id = tag.closest("article").dataset.id; 
         let article = tag.closest("article");
+        let color = tag.closest("article").dataset.color;
     
         tag.addEventListener('click', event => {
             event.preventDefault();
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
-                if (id === sofa.idChoice){ 
+                if (id === sofa.idChoice && sofa.colorChoice === color){ 
                     let index = productInStorage.indexOf(sofa) // récupération index du canapé
-                    productInStorage.splice(index, 1); // on retire ce canapé du panier   
-                    article.remove(); // supprime du DOM
+                    if(confirm("Voulez vous supprimer cet article de votre panier?")){
+                        article.remove(); // supprime du DOM
+                        productInStorage.splice(index, 1);// on retire ce canapé du panier
+                    }
                 }
             })
 
         localStorage.setItem("products", JSON.stringify(productInStorage)); 
 
         displayTotalPrice(productInStorage);
-        displayTotalQuantity(productInStorage);
+        displayTotalQuantity(productInStorage);        
         })
     })
 }
 
-/* Pour chaque canapé du LS on met dans le tableau vide la quantité choisie
+/* 
+Pour chaque canapé du LS on met dans le tableau vide la quantité choisie
 On additionne entre elles toutes les données du tableau
 On affiche dans la balise totalQuantity le résulat obtenu 
 */
@@ -145,9 +149,10 @@ function displayTotalQuantity(productInStorage){
     }
 }
 
-/* Pour chaque canapé du LS on récupère le prix et la quantité et on les multiplie
-   on met la quantité obtenue dans le tableau vide et on additionne tous les chiffres du tableau
-    on affiche ds la balise totalPrice le résultat obtenu
+/* 
+Pour chaque canapé du LS on récupère le prix et la quantité et on les multiplie
+on met la quantité obtenue dans le tableau vide et on additionne tous les chiffres du tableau
+on affiche ds la balise totalPrice le résultat obtenu
 */
 function displayTotalPrice(productInStorage){
     let totalPriceQuantity = "";
@@ -165,7 +170,8 @@ function displayTotalPrice(productInStorage){
         document.getElementById("totalPrice").innerHTML = totalPriceQuantity;
     }
 }
-/* Fonction va envoyer le formulaire à l'API avec les éléments : 
+/* 
+Fonction va envoyer le formulaire à l'API avec les éléments : 
 -> products = un tableau qui contient les ID
 -> contact = un objet qui contient les données du formulaires vérifiées
 */
@@ -189,7 +195,8 @@ function sendForm(productInStorage, contact){
     .catch(e => console.log("il y a une erreur sur la page cart de type :" + e));   
 }
 
-/* Au clic : 
+/* 
+Au clic : 
 Récupère les valeurs des champs des formulaires
 Appelle la fonction verifyForm avec les bons paramètres pour vérifier chaque champ et afficher les messsages d'erreur
 Créé un objet contact avec les values du formulaire
@@ -236,6 +243,7 @@ function validateForm(){
             sendForm(productInStorage, contact);
         }else{
             console.log("le formulaire n'est pas conforme");
+            alert("Il y a une erreur sur la page. Votre commande n'est pas validée")
         }
     })
 }
