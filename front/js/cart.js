@@ -1,9 +1,5 @@
 
-let productInStorage = [];
-
-if (productInStorage.length === 0){
-    productInStorage = JSON.parse(localStorage.getItem("products"))
-}
+let productInStorage = JSON.parse(localStorage.getItem("products")) || [];
 
 /*
 fonction principale de la page
@@ -52,7 +48,7 @@ function displayElements (productInStorage) {
                     </div>
                 </div>
             </article>`
-    } 
+        } 
    console.log("Les éléments du panier : ", productInStorage);
 }
 

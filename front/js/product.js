@@ -148,8 +148,6 @@ function addArray(idProduct, datasProduct){
             localStorage.setItem("products", JSON.stringify(arrayCart)); /////// on envoi arrayCart au format JSON ds Localstorage
         }
         console.log("produit ajouté au panier : ", productChoice);
-        //productChoice = le produit sélectionné avec toutes ses infos
-        //arrayCart = le panier
     })
 }
 
