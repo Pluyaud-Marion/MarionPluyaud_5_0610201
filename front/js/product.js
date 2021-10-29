@@ -1,3 +1,6 @@
+/*
+Fonction principale
+*/
 async function main(){
     const idProduct = {
           id : ''
@@ -29,26 +32,31 @@ async function main(){
     colorSofa(datasProduct, elements, tags);
     addArray(idProduct, datasProduct);
 
+    console.log("Informations sur cet article : ", datasProduct);
 }
 
-main()
 
-//fonction qui récupère l'ID du produit à afficher
+/*
+Récupère l'ID du produit à afficher et le met ds idProduct
+*/
 function recoverId(idProduct){
     const urlProduit = window.location.search; // récupère l'id dans l'url (après le ?) = clé + valeur
     const urlSearchParams = new URLSearchParams(urlProduit);
     idProduct.id = urlSearchParams.get('id'); //récupère la clé id 
- 
 };
 
-// récupère les données d'un produit par son ID
+/*
+Récupère les données d'un produit, grâce à son ID, dans l'API et return la promesse pour les récupérer dans datasProduct dans main
+*/
 function fetchDataProduct(idProduct){
     return fetch(`http://localhost:3000/api/products/${idProduct.id}`)
     .then(response => response.json())
     .catch(e => console.log("il y a une erreur sur la page produit de type :" + e));
 };
 
-//récupère les informations sur un produit
+/*
+Récupère à partir de datasProduct les infos sur le produit sélectionné et les stocke dans elements
+*/
 function recoverElements(datasProduct, elements){
     elements.descriptionElement = datasProduct.description;
     elements.priceElement = datasProduct.price;
@@ -56,33 +64,46 @@ function recoverElements(datasProduct, elements){
     elements.altImageElement = datasProduct.altTxt;
     elements.nameElement = datasProduct.name;
 }
-//créé les balises manquantes
+
+/*
+Création balise img et insertion dans le DOM
+*/
 function createTag(tags){
     tags.tagImg = document.createElement('img');
     document.querySelector(".item__img").appendChild(tags.tagImg);
 }
 
-//affiche sur la page les éléments récupérés via l'API
+/*
+Affichage sur la page des données récupérées par l'API et stockées dans elements 
+*/
 function displayElements(elements, tags){
     tags.tagImg.src = elements.imageElement;
     tags.tagImg.alt = elements.altImageElement;
-    document.querySelector("#title").innerHTML = elements.nameElement; // rajouter le nom dans balise title
+    document.querySelector("#title").innerHTML = elements.nameElement; 
     document.querySelector("#price").innerHTML = elements.priceElement;
     document.querySelector("#description").innerHTML = elements.descriptionElement;
 }
 
-//spécifique pour afficher la sélection des couleurs
+/*
+Affichage du menu déroulant des couleurs disponibles pour chaque article
+*/
 function colorSofa(datasProduct, elements, tags){
     elements.colorsElement = datasProduct.colors;
-    for (color of elements.colorsElement){
+    for (let color of elements.colorsElement){
         tags.tagOptionColor = document.createElement('option');
         document.querySelector("#colors").appendChild(tags.tagOptionColor);
         tags.tagOptionColor.value = color;
         tags.tagOptionColor.innerHTML = color;
     }
+    console.log("Couleurs disponibles pour cet article : ",datasProduct.colors);
 }
 
-
+/*
+Récupération de chaque produit (et ses caractéristiques) ajoutés au panier = productChoice
+Ajout de chaque productChoice dans un tabeau arrayCart qui représente le panier
+Envoi du arrayCart dans localstorage
++ vérification si même produit (même id et même couleur) sont déjà dans arrayCart = si oui incrémentation de la quantité seulement et pas d'ajout dans arrayCart / si non ajout dans arrayCart
+*/
 function addArray(idProduct, datasProduct){
     document.querySelector("#addToCart").addEventListener("click", event => {
         event.preventDefault();
@@ -107,12 +128,13 @@ function addArray(idProduct, datasProduct){
 
             // si le tableau retourné ds elementExistingInArrayCart est rempli = c'est qu'il y a un doublon
             if (elementExistingInArrayCart.length){ 
+                
                 // on ajoute la quantité choisie à la quantité déjà existante
                 let total = productChoice.quantityChoice + elementExistingInArrayCart[0].quantityChoice
+                console.log("Ce produit est déjà dans le panier, le total de cet article choisi : ", total);
                 
-                
-                //pour chaque produit dans arrayCart, si la couleur et l'id du produit nouveau est identique à la couleur et l'id d'un produit dékà existant -> la nouvelle quantité correspond à l'addition
-                for (product of arrayCart){
+                //pour chaque produit dans arrayCart, si la couleur et l'id du produit nouveau est identique à la couleur et l'id d'un produit déjà existant -> la nouvelle quantité correspond à l'addition
+                for (let product of arrayCart){
                     if (product.colorChoice === productChoice.colorChoice && product.idChoice === productChoice.idChoice){
                         product.quantityChoice = total;
                     }
@@ -130,10 +152,12 @@ function addArray(idProduct, datasProduct){
             arrayCart.push(productChoice); /////// on push le produit sélectionné vers [arrayCart]
             localStorage.setItem("products", JSON.stringify(arrayCart)); /////// on envoi arrayCart au format JSON ds Localstorage
         }
-
+        console.log("produit ajouté au panier : ", productChoice);
+        //productChoice = le produit sélectionné avec toutes ses infos
+        //arrayCart = le panier
     })
 }
 
-
+main()
 
 

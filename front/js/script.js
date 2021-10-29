@@ -1,4 +1,7 @@
 
+/*
+Fonction principale
+*/
 async function main(){
     const datas = await fetchData(); // met dans constante datas les données retournées par fetch
     if (!datas) return
@@ -21,25 +24,31 @@ async function main(){
     }
 }
 
-
-//fonction pour créer le tag section et le placer sur le DOM
+/*
+Création de la balise section et placement sur le DOM
+*/
 function creatingTagSection(tags){
-    tags.tagSection = document.createElement('section'); // créé la balise section
-    tags.tagSection.classList.add('items'); // ajoute à la balise section classe .items
+    tags.tagSection = document.createElement('section'); 
+    tags.tagSection.classList.add('items'); 
     tags.tagSection.id = 'items'; // ajoute à la balise section l'id #items
     const selectDivLimitedWidthBlock = document.querySelector("main .limitedWidthBlock"); // pointe sur l'élément main qui a la classe limitedWidthBlock
     selectDivLimitedWidthBlock.appendChild(tags.tagSection); // ajout de la balise section comme enfant de la div class limitedWithBlock
 }
 
-// fonction pour récupérer les données 
+/*
+Récupération des données dans l'API et return de la promesse pour récupérer les datas dans la const datas
+*/
 function fetchData(){
-    return fetch("http://localhost:3000/api/products") //retourne la promesse
-    .then(response => response.json()) // format json pour les récupérer dans fonction main
+    return fetch("http://localhost:3000/api/products") 
+    .then(response => response.json()) 
     .catch(e => console.log("il y a une erreur de type : " + e));
 }
 
-// fonction pour créer les balises + les mettre aux bons endroits du DOM 
 
+/*
+Création des balises A / section / article / img / h3 / p et placement des balises sur le DOM
+(pour chaque canapé = appelée dans une boucle for dans main)
+*/
 function creatingTags(tags){
     tags.tagA = document.createElement('a'); // création balise a
     tags.tagSection.appendChild(tags.tagA); // ajout balise a dans balise section
@@ -56,7 +65,11 @@ function creatingTags(tags){
     tagArticle.appendChild(tags.tagP);
 }
 
-// fonction pour assigner les données récupérées par fetchData dans les balises créées
+/*
+Permet d'assigner les données récupérées par fetchData aux balises créées 
+(pour chaque canapé = appelée dans une boucle for dans main)
+*/
+
 function assignData(tags, sofa){
     tags.tagImg.src = sofa.imageUrl; // assigne urlimage de chaque élément
     tags.tagImg.alt = sofa.altTxt; // assigne le alt
@@ -65,10 +78,12 @@ function assignData(tags, sofa){
     tags.idDom = sofa._id;
 }
 
-// fonction pour faire le lien entre un produit sur page d'accueil et page produit
+/*
+Permet de faire le lien entre un produit sur page d'accueil et page produit
+(pour chaque canapé = appelée dans une boucle for dans main)
+*/
 function linkPages(tags){
     const newHref = tags.tagA.href += "?id=" + tags.idDom;
-    //console.log(newHref)
 }
 
 

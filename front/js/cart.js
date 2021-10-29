@@ -8,23 +8,23 @@ if(productInStorage.length === 0){
 fonction principale de la page
 */
 function main(){
- 
+
+
     displayElements(productInStorage);
     modifyQuantity(productInStorage);
     deleteQuantity(productInStorage)
     displayTotalPrice(productInStorage);
     displayTotalQuantity(productInStorage);
    
-    validateForm();
+    validateForm(productInStorage);
 }
 
 /*
 On part du tableau ProductInStorage = le panier récupéré du localstorage
-Si tableau vide : on modifie balise h1 pour indiquer panier vide
-Si tableau plein : pour chaque canapé du tableau on affiche les éléments avec innerHTML
+pour chaque canapé du tableau on affiche les éléments avec innerHTML
 + ajout balise color
 */
-function displayElements(productInStorage){
+function displayElements (productInStorage) {
     for (let sofa of productInStorage){ 
         let selectTagSection = document.getElementById("cart__items"); 
 
@@ -53,7 +53,7 @@ function displayElements(productInStorage){
                 </div>
             </article>`
     } 
-   
+   console.log("Les éléments du panier : ", productInStorage);
 }
 
 /* 
@@ -64,13 +64,14 @@ On cible le canapé sur lequel on modifie quantité avec la double condition
 On donne ds productInStorage la nouvelle valeur à quantityChoice de ce canapé
 On envoi le nouveau productInStorage ds LocalStorage
 */
+const modifyQuantity = productInStorage =>{
+    const tagQuantity = document.querySelectorAll(".itemQuantity");
 
-const modifyQuantity = (productInStorage) =>{
-    let tagQuantity = document.querySelectorAll(".itemQuantity");
     tagQuantity.forEach(tag => {
+        const tagClosest = tag.closest("article");
         let newQuantity = "";
-        let id = tag.closest("article").dataset.id; 
-        let color = tag.closest('article').dataset.color;
+        const id = tagClosest.dataset.id; 
+        const color = tagClosest.dataset.color;
 
         tag.addEventListener('change', event => {
             event.preventDefault();
@@ -78,7 +79,7 @@ const modifyQuantity = (productInStorage) =>{
        
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
                 
-                if (id === sofa.idChoice && sofa.colorChoice === color){ 
+                if (sofa.idChoice === id  && sofa.colorChoice === color){ 
                     sofa.quantityChoice = newQuantity // la quantité des produits du panier se met à jour et devient égale à la nouvelle quantité
                 }
             })
@@ -93,27 +94,28 @@ const modifyQuantity = (productInStorage) =>{
 
 /* 
 On part du tableau ProductInStorage = le panier récupéré du localstorage
-Pour chaque balise delete, on récupère l'id de l'élément avec closest,
-au click sur la balise on cible le canapé à supprimer avec la condition
+Pour chaque balise delete, on récupère l'id + la couleur de l'élément avec closest 
+au click sur la balise on cible le canapé à supprimer avec la double condition
 on récupère l'index ds productInStorage de ce canapé + on le supprime. 
 On envoi le nouveau productInStorage ds LocalStorage
 */
-const deleteQuantity = (productInStorage) => {
-    let tagDelete = document.querySelectorAll(".deleteItem"); 
+const deleteQuantity = productInStorage => {
+    const tagDelete = document.querySelectorAll(".deleteItem"); 
     
     tagDelete.forEach(tag => {
-        let id = tag.closest("article").dataset.id; 
-        let article = tag.closest("article");
-        let color = tag.closest("article").dataset.color;
+        const tagClosest = tag.closest("article");
+        const id = tagClosest.dataset.id; 
+        const article = tagClosest;
+        const color = tagClosest.dataset.color;
     
         tag.addEventListener('click', event => {
             event.preventDefault();
-            productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
-                if (id === sofa.idChoice && sofa.colorChoice === color){ 
+            productInStorage.forEach(sofa => {
+                if (sofa.idChoice === id && sofa.colorChoice === color){ 
                     let index = productInStorage.indexOf(sofa) // récupération index du canapé
                     if(confirm("Voulez vous supprimer cet article de votre panier?")){
                         article.remove(); // supprime du DOM
-                        productInStorage.splice(index, 1);// on retire ce canapé du panier
+                        productInStorage.splice(index, 1); // on retire ce canapé du panier
                     }
                 }
             })
@@ -134,7 +136,7 @@ On affiche dans la balise totalQuantity le résulat obtenu
 function displayTotalQuantity(productInStorage){
     
     const arrayQuantity = [];
-    for (sofa of productInStorage){
+    for (let sofa of productInStorage){
         arrayQuantity.push(sofa.quantityChoice)
         const reducer = (previousValue, currentValue) => previousValue + currentValue;
         const totalQuantity = arrayQuantity.reduce(reducer)
@@ -158,7 +160,7 @@ function displayTotalPrice(productInStorage){
     let totalPriceQuantity = "";
     let arrayPrice = [];
 
-    for (sofa of productInStorage){ 
+    for (let sofa of productInStorage){ 
         totalPriceQuantity = sofa.priceChoice * sofa.quantityChoice 
         arrayPrice.push(totalPriceQuantity)
         const reducer = (previousValue, currentValue) => previousValue + currentValue;
@@ -170,6 +172,7 @@ function displayTotalPrice(productInStorage){
         document.getElementById("totalPrice").innerHTML = totalPriceQuantity;
     }
 }
+
 /* 
 Fonction va envoyer le formulaire à l'API avec les éléments : 
 -> products = un tableau qui contient les ID
@@ -178,7 +181,7 @@ Fonction va envoyer le formulaire à l'API avec les éléments :
 function sendForm(productInStorage, contact){
     let products = [];
 
-    for (sofa of productInStorage){
+    for (let sofa of productInStorage){
         let productId = sofa.idChoice;
         products.push(productId)
     }
@@ -200,9 +203,9 @@ Au clic :
 Récupère les valeurs des champs des formulaires
 Appelle la fonction verifyForm avec les bons paramètres pour vérifier chaque champ et afficher les messsages d'erreur
 Créé un objet contact avec les values du formulaire
-Appelle la fonction d'envoi du formulaire si la  vérification est ok
+Appelle la fonction d'envoi du formulaire si la  vérification est ok et si panier non vide
 */
-function validateForm(){
+function validateForm(productInStorage){
     const buttonValidate = document.getElementById("order");
 
     const firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
@@ -237,9 +240,9 @@ function validateForm(){
             city : ville,
             email : mail,
         }
-
-        //si le formulaire est valide -> appel de la fonction sendForm
-        if (verifyForm(prenom, firstNameErrorMsg, regexNameCity) && verifyForm(nom, lastNameErrorMsg, regexNameCity) && verifyForm(adresse, addressErrorMsg, regexAddress) && verifyForm(ville, cityErrorMsg, regexNameCity) && verifyForm(mail, emailErrorMsg, regexEmail)) {
+        
+        //si le formulaire est valide + que le panier n'est pas vide -> appel de la fonction sendForm
+        if (verifyForm(prenom, firstNameErrorMsg, regexNameCity) && verifyForm(nom, lastNameErrorMsg, regexNameCity) && verifyForm(adresse, addressErrorMsg, regexAddress) && verifyForm(ville, cityErrorMsg, regexNameCity) && verifyForm(mail, emailErrorMsg, regexEmail) && productInStorage.length >= 1) {
             sendForm(productInStorage, contact);
         }else{
             console.log("le formulaire n'est pas conforme");
@@ -247,7 +250,6 @@ function validateForm(){
         }
     })
 }
-
 
 /*
 Fonction qu'on appellera pour chaque champ du formulaire pour vérifier le champ 
@@ -264,6 +266,5 @@ function verifyForm(elementContact, elementError, elementRegex){
         return true
     }
 }
-
 
 main()
