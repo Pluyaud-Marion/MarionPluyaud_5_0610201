@@ -35,7 +35,6 @@ async function main(){
     console.log("Informations sur cet article : ", datasProduct);
 }
 
-
 /*
 Récupère l'ID du produit à afficher et le met ds idProduct
 */
@@ -118,17 +117,13 @@ function addArray(idProduct, datasProduct){
 
         let arrayCart = [];
         
-        /////// si LS n'est pas vide = on récupère son contenu + on l'insère dans le tableau arrayCart + on le renvoit vers LS avec le nouveau contenu
-        if (localStorage.getItem("products")) { ////// si LS non vide
-            arrayCart = JSON.parse(localStorage.getItem("products")); ///// on récupère son contenu et on l'insère ds [arrayCart]
-
-            /////Si ds arrayCart il y a produit qui a même couleur + même ID -> on retourne le produit déjà existant sous forme de tableau
+        if (localStorage.getItem("products")) { //si LS non vide
+            arrayCart = JSON.parse(localStorage.getItem("products")); // on récupère son contenu et on l'insère ds [arrayCart]
+            //Si ds arrayCart il y a produit qui a même couleur + même ID -> on retourne le produit déjà existant sous forme de tableau
             const elementExistingInArrayCart = arrayCart.filter(product => product.colorChoice === productChoice.colorChoice && product.idChoice === productChoice.idChoice)
-           
-
+    
             // si le tableau retourné ds elementExistingInArrayCart est rempli = c'est qu'il y a un doublon
             if (elementExistingInArrayCart.length){ 
-                
                 // on ajoute la quantité choisie à la quantité déjà existante
                 let total = productChoice.quantityChoice + elementExistingInArrayCart[0].quantityChoice
                 console.log("Ce produit est déjà dans le panier, le total de cet article choisi : ", total);

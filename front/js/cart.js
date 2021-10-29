@@ -1,6 +1,7 @@
+
 let productInStorage = [];
 
-if(productInStorage.length === 0){
+if (productInStorage.length === 0){
     productInStorage = JSON.parse(localStorage.getItem("products"))
 }
 
@@ -8,7 +9,6 @@ if(productInStorage.length === 0){
 fonction principale de la page
 */
 function main(){
-
 
     displayElements(productInStorage);
     modifyQuantity(productInStorage);
@@ -76,7 +76,6 @@ const modifyQuantity = productInStorage =>{
         tag.addEventListener('change', event => {
             event.preventDefault();
             newQuantity = Number(tag.value); // la nouvelle quantité est la value de la balise quantité
-       
             productInStorage.forEach(sofa => { // Pour chaque canapé mis ds le panier, si l'id est le même que celui récupéré -> on cible le canapé 
                 
                 if (sofa.idChoice === id  && sofa.colorChoice === color){ 
@@ -213,19 +212,18 @@ function validateForm(productInStorage){
     const addressErrorMsg = document.getElementById("addressErrorMsg");
     const cityErrorMsg = document.getElementById("cityErrorMsg");
     const emailErrorMsg = document.getElementById("emailErrorMsg");
-    
+
     const regexNameCity = /^[a-zA-ZÀ-ÿ_-]{2,60}$/
     const regexAddress = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,60}$/;
     const regexEmail = /^[^@\s]{2,30}@[^@\s]{2,30}\.[^@\s]{2,5}$/;
 
     buttonValidate.addEventListener('click', event => {
         event.preventDefault();
-
         prenom = document.querySelector('#firstName').value;
         nom = document.querySelector('#lastName').value;
         adresse = document.querySelector('#address').value;
         ville = document.querySelector('#city').value;
-        mail = document.querySelector('#email').value
+        mail = document.querySelector('#email').value;
 
         verifyForm(prenom, firstNameErrorMsg, regexNameCity);
         verifyForm(nom, lastNameErrorMsg, regexNameCity);
@@ -240,7 +238,6 @@ function validateForm(productInStorage){
             city : ville,
             email : mail,
         }
-        
         //si le formulaire est valide + que le panier n'est pas vide -> appel de la fonction sendForm
         if (verifyForm(prenom, firstNameErrorMsg, regexNameCity) && verifyForm(nom, lastNameErrorMsg, regexNameCity) && verifyForm(adresse, addressErrorMsg, regexAddress) && verifyForm(ville, cityErrorMsg, regexNameCity) && verifyForm(mail, emailErrorMsg, regexEmail) && productInStorage.length >= 1) {
             sendForm(productInStorage, contact);
