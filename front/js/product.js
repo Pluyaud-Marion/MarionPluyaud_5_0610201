@@ -116,8 +116,11 @@ function addArray(idProduct, datasProduct){
         }
 
         let arrayCart = [];
-        
-        if (localStorage.getItem("products")) { //si LS non vide
+
+        if (productChoice.quantityChoice > 100){
+            alert("Vous ne pouvez pas ajouter plus de 100 exemplaires de cet article")
+        }
+        else if (localStorage.getItem("products")) { //si LS non vide
             arrayCart = JSON.parse(localStorage.getItem("products")); // on récupère son contenu et on l'insère ds [arrayCart]
             //Si ds arrayCart il y a produit qui a même couleur + même ID -> on retourne le produit déjà existant sous forme de tableau
             const elementExistingInArrayCart = arrayCart.filter(product => product.colorChoice === productChoice.colorChoice && product.idChoice === productChoice.idChoice)
@@ -134,6 +137,7 @@ function addArray(idProduct, datasProduct){
                         product.quantityChoice = total;
                     }
                 }
+              
             
             // si le tableau retourné dans elementExistingInArrayCart est vide = on push le nouveau produit
             }else{
@@ -147,7 +151,7 @@ function addArray(idProduct, datasProduct){
             arrayCart.push(productChoice); /////// on push le produit sélectionné vers [arrayCart]
             localStorage.setItem("products", JSON.stringify(arrayCart)); /////// on envoi arrayCart au format JSON ds Localstorage
         }
-        console.log("produit ajouté au panier : ", productChoice);
+       // console.log("produit ajouté au panier : ", productChoice);
     })
 }
 
