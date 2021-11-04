@@ -2,6 +2,7 @@
 Fonction principale
 */
 async function main(){
+    
     const idProduct = {
           id : ''
     }
@@ -138,7 +139,6 @@ function addArray(idProduct, datasProduct){
                     }
                 }
               
-            
             // si le tableau retourné dans elementExistingInArrayCart est vide = on push le nouveau produit
             }else{
                 arrayCart.push(productChoice);
@@ -151,7 +151,7 @@ function addArray(idProduct, datasProduct){
             arrayCart.push(productChoice); /////// on push le produit sélectionné vers [arrayCart]
             localStorage.setItem("products", JSON.stringify(arrayCart)); /////// on envoi arrayCart au format JSON ds Localstorage
         }
-       // console.log("produit ajouté au panier : ", productChoice);
+        console.log("produit ajouté au panier : ", productChoice);
     })
 }
 
