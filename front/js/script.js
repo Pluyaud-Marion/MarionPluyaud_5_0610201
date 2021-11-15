@@ -62,6 +62,7 @@ function creatingTags(tags){
     tags.tagP = document.createElement('p');
     tags.tagP.classList.add('productDescription');
     tagArticle.appendChild(tags.tagP);
+    
 }
 
 /*
